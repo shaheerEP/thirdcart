@@ -1,0 +1,19 @@
+<body>
+    <div class="container mt-5">
+        <h2 class="text-center">Product Details</h2>
+        <div class="row mt-3">
+            {{#each orders.products}}
+                <div class="col-md-4">
+                    <div class="card mb-4">
+                        <img src="/product-images/{{this.image}}" class="card-img-top" alt="{{this.name}}" style="height: 200px; object-fit: contain;">
+                        <div class="card-body">
+                            <h5 class="card-title">{{this.name}}</h5>
+                            <p class="card-text">Price: {{this.price}}</p>
+                            <h6 class="card-text">Quantity: {{this.quantity}}</h6>
+                        </div>
+                    </div>
+                </div>
+            {{/each}}
+        </div>
+    </div>
+</body>

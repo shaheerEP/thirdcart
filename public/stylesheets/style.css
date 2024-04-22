@@ -1,0 +1,51 @@
+
+ 
+  .light-gray-badge {
+    background-color: #f8f9fa; /* Very light gray background */
+    color: white; /* White text color */
+  }
+  .empty-cart {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 50px 0;
+    margin-top: 50px; /* Adjust this value as needed */
+  }
+  
+  .empty-cart h2 {
+    font-size: 2em;
+    margin-bottom: 15px;
+  }
+  
+  .empty-cart p {
+    color: #666;
+  }
+  .checkout-container {
+    display: flex;
+    flex-wrap: wrap;
+}
+.checkout-form {
+    flex: 2;
+    padding: 1rem;
+}
+.checkout-summary {
+    flex: 1;
+    padding: 1rem;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin-left: 1rem;
+}
+@media print {
+  body {
+      width: 100%;
+  }
+  .container {
+      width: auto;
+  }
+  /* Add any other styles you want for printing */
+}
+#printButton {
+  display: none;
+}
