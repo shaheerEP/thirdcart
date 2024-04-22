@@ -30,30 +30,27 @@ const verifyLoggin = (req,res,next)=> {
 
 
 
-
 router.get('/', async function(req, res, next) {
   let user = req.session.user
-  // console.log(user)
+  console.log(user)
+  var totalQuantity = 0;
   if(req.session.user){
- 
-  var totalQuantity = await userHelpers.getCartCount(req.session.user.id);
+    totalQuantity = await userHelpers.getCartCount(req.session.user.id);
   }
 
-    productHelper.getAllProducts().then((allproducts) => {
-      // 
-        const products = allproducts.map(product => ({
-          _id:product._id,
-          name: product.name,
-          category: product.category,
-          description: product.description,
-          image: product.image,
-          price: product.price,
-        }));
-        res.render('user/view-products', {admin: false, allproducts: products, status: req.status,user,totalQuantity});
-      
-      }).catch((error) => {
-        console.error('Error fetching products:', error);
-      });
+  productHelper.getAllProducts().then((allproducts) => {
+    const products = allproducts.map(product => ({
+      _id:product._id,
+      name: product.name,
+      category: product.category,
+      description: product.description,
+      image: product.image,
+      price: product.price,
+    }));
+    res.render('user/view-products', {admin: false, allproducts: products, status: req.status,user, totalQuantity});
+  }).catch((error) => {
+    console.error('Error fetching products:', error); 
+  });
 });
 
  
@@ -184,10 +181,10 @@ router.post('/remove-from-cart/:id', verifyLoggin, async (req, res) => {
     let { removedQuantity, removedPrice } = await userHelpers.removeFromcart(req.params.id, req.session.user.id);
     res.json({ removedQuantity, removedPrice });
   } catch (error) {
+    console.error('Error removing from cart:', error);
     res.status(500).send(error);
   }
 });
-
 
 router.get('/get-cart-total', verifyLoggin, async (req, res) => {
   try {
@@ -204,6 +201,7 @@ router.get('/place-order',verifyLoggin,async function(req, res, next) {
   res.render('user/place-order',{totalAmount,user:req.session.user});
 })
 router.get('/order-success',verifyLoggin,async function(req, res, next) {
+  await userHelpers.removeFromCart(req.session.user.id); 
   
   res.render('user/order-success',{user:req.session.user});
 })
@@ -255,7 +253,6 @@ router.post('/orders', verifyLoggin, async (req, res) => {
     // Get the _id of the new order 
     var orderId = orderInstance._id;
     
-    await userHelpers.removeFromCart(req.session.user.id); 
   
     // Redirect the user based on the payment method
     if (req.body.payment_method === 'cod') {

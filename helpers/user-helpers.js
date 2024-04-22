@@ -174,9 +174,12 @@ async removeFromCart(userId) {
     console.error('Error removing cart:', error);
   }
 }
-,
-async removeFromcart(prodId, userId) {
+,async removeFromcart(prodId, userId) {
   let cart = await Cart.findOne({ userId });
+  if (!cart) {
+    throw new Error('Cart not found for user');
+  }
+
   let product = cart.products.find(p => p.productId === prodId);
   if (!product) {
     throw new Error('Product not found in cart');
@@ -184,7 +187,11 @@ async removeFromcart(prodId, userId) {
 
   let removedQuantity = product.quantity;
   let productDetails = await Product.findById(prodId);
-  let removedPrice = Number(productDetails.price.replace(/,/g, ''));
+  if (!productDetails) {
+    throw new Error('Product details not found');
+  }
+
+  let removedPrice = Number(productDetails.price);
 
   // Remove the product from the cart
   cart.products = cart.products.filter(p => p.productId !== prodId);
@@ -212,18 +219,19 @@ async removeFromcart(prodId, userId) {
 ,
 async getOrdersByUserId(userId) {
   try {
-    const orders = await Order.find({ userId: userId });
+    const orders = await Order.find({ userId: userId, status: { $ne: 'pending' } });
     const options = { year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric' };
     return orders.map(order => {
       const orderObject = order.toObject();
       orderObject.submittedAt = orderObject.submittedAt.toLocaleString("en-IN", options);
       return orderObject;
     });
-  } catch (error) {
+  } catch (error) { 
     console.error(error);
     return null;
   }
-},
+}
+,
 
 async getOrdersByOrderId(orderId) {
   try {
