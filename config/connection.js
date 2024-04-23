@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 // Replace with your MongoDB Atlas connection string
-const connectionString = 'mongodb+srv://shaheer:92NHxUOtie7fNwla@shaheersdatabase.irkcohe.mongodb.net/?retryWrites=true&w=majority&appName=shaheersdatabase';
+const connectionString = process.env.DATABASE_URL;
 
 const Product = mongoose.model('Product');
 mongoose.connect(connectionString, {
